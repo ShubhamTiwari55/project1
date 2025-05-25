@@ -1,11 +1,14 @@
 const express = require('express');
+require('dotenv').config();
+
+const connectDB = require('./config/db');
 const app = express();
 const PORT = 3000;
 
-app.get('/', (req, res)=>{
-    res.set('Content-Type', 'text/html');
-    res.status(200).send("<h1>Hello GFG Learner!</h1>");
-});
+connectDB();
+app.use(express.json());
+
+app.use('/api/auth', require('./Auth/auth.routes'));
 
 app.listen(PORT, (error) =>{
     if(!error)
