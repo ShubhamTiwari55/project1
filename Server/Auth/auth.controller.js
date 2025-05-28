@@ -3,24 +3,34 @@ const {
     login,
     getUser,
     updateUser,
+    verifyEmail,
 } = require('./auth.service');
 
-exports.signup = async (req, res) => {  
-    try {
-        const { token, user } = await signup(req.body);
-        res.status(201).json({ token, user: { id: user._id, name: user.name, email: user.email } });
-    } catch (err) {
+exports.signup = async (req, res) => {
+  try {
+    const response = await signup(req.body);
+    res.status(201).json(response);
+  } catch (err) {
     res.status(400).json({ error: err.message });
-    }
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const response = await verifyEmail(req.query.token);
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 };
 
 exports.login = async (req, res) => {
-    try {
-    const { token, user } = await login(req.body);
-    res.status(200).json({ token, user: { id: user._id, name: user.name, email: user.email } });
-    } catch (err) {
+  try {
+    const { user, token } = await login(req.body);
+    res.status(200).json({ token, user: { id: user._id, email: user.email } });
+  } catch (err) {
     res.status(401).json({ error: err.message });
-    }
+  }
 };
 
 exports.getProfile = async (req, res) => {

@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
     profilePic: {
     type: String,
     default: 'https://asset.cloudinary.com/dnbutfdy7/8c9c3cc708a1dc7a3313dbbc030c3c01',
-  },
+},
+    verified: { type: Boolean, default: false },
+    verificationToken: String,
     location: { type: String },
 }, { timestamps: true });
 

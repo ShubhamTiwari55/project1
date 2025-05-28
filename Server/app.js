@@ -3,7 +3,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
 connectDB();
 app.use(express.json());

@@ -8,5 +8,6 @@ router.post('/signup', controller.signup);
 router.post('/login', controller.login);
 router.get('/me', authMiddleware, controller.getProfile);
 router.put('/me', authMiddleware, parser.single('profilePic'), controller.updateProfile);
+router.get('/verify-email', controller.verifyEmail);
 
 module.exports = router;
