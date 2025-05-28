@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     phone: { type: String },
     password: { type: String, required: true },
+    profilePic: {
+    type: String,
+    default: 'https://asset.cloudinary.com/dnbutfdy7/8c9c3cc708a1dc7a3313dbbc030c3c01',
+  },
     location: { type: String },
 }, { timestamps: true });
 

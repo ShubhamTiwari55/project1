@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
     try {
-    const user = await getUser(req.userId);
+    const user = await getUser(req.user.userId);
     res.json(user);
     } catch (err) {
     res.status(404).json({ error: err.message });
@@ -34,9 +34,30 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
-    const updated = await updateUser(req.userId, req.body);
-    res.json(updated);
+    const userId = req.user.userId;
+
+    const updates = {
+        name: req.body.name,
+        phone: req.body.phone,
+    };
+
+    if (req.file && req.file.path) {
+        updates.profilePic = req.file.path;
+    }
+
+    const updatedUser = await updateUser(userId, updates);
+
+    if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({
+        message: 'Profile updated successfully',
+        user: updatedUser,
+    });
     } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
     }
 };
+
