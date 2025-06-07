@@ -9,6 +9,7 @@ connectDB();
 app.use(express.json());
 
 app.use('/api/auth', require('./Auth/auth.routes'));
+app.use('/api/req', require('./Req&Res/route'));
 
 app.listen(PORT, (error) =>{
     if(!error)
