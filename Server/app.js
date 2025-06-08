@@ -13,7 +13,7 @@ app.use('/api/req', require('./Req&Res/route'));
 app.use('/api/pref', require('./Preference/routes'));
 app.use('/api/chat', require('./Chats/routes'));
 app.use('/api/payment', require('./Payments/route'));
-
+app.use('/api/ratings', require('./Ratings/route'));
 
 
 app.listen(PORT, (error) =>{

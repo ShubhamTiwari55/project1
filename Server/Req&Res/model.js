@@ -10,6 +10,7 @@ const requestSchema = new mongoose.Schema({
     notes: { type: String },
     status: { type: String, enum: ['active', 'matched', 'cancelled'], default: 'active' },
     matchedLender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    isRated: { type: Boolean, default: false },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Request', requestSchema);

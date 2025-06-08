@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema({
     verified: { type: Boolean, default: false },
     verificationToken: String,
     location: { type: String },
+    avgRating: { type: Number, default: 0 },
+    ratingCount: { type: Number, default: 0 },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);
