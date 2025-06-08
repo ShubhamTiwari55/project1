@@ -1,63 +1,81 @@
-const ChatThread = require('./chatThread.model');
-const Message = require('./message.model');
+const ChatThread = require('./chatThread');
+const ChatMessage = require('./message.model');
+const User = require('../Auth/auth.model');
 
-const getUserThreads = async (userId) => {
-    return ChatThread.find({ participants: userId })
-        .sort({ updatedAt: -1 })
-        .populate('participants', 'name email');
-};
+const startThread = async (user1Id, participantIds) => {
+  console.log(user1Id);
+  
+    
+    const allParticipantIds = [user1Id, ...participantIds];
 
-const getThreadMessages = async (threadId, userId, page = 1, limit = 20) => {
-    const thread = await ChatThread.findById(threadId);
-    if (!thread) throw new Error('Thread not found');
-    if (!thread.participants.includes(userId)) throw new Error('Access denied');
+    const user1 = await User.findById(user1Id);
+    console.log(user1);
+    if (!user1) throw new Error('User not found');
 
-    const messages = await Message.find({ thread: threadId })
-        .sort({ timestamp: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate('sender', 'name email');
+    const users = await User.find({ _id: { $in: participantIds } });
+    if (users.length !== participantIds.length) {
+        throw new Error('One or more participantIds are invalid');
+    }
 
-    return messages;
-};
-
-const sendMessage = async (threadId, senderId, messageText) => {
-    const thread = await ChatThread.findById(threadId);
-    if (!thread) throw new Error('Thread not found');
-    if (!thread.participants.includes(senderId)) throw new Error('Access denied');
-
-    const message = await Message.create({
-        thread: threadId,
-        sender: senderId,
-        message: messageText,
-        readBy: [senderId],
-    });
-
-    thread.lastMessage = messageText;
-    await thread.save();
-
-    return message;
-};
-
-const startThread = async (participantIds) => {
     const thread = await ChatThread.create({
-        participants: participantIds,
+        participants: allParticipantIds,
+        lastMessage: '',
     });
 
     return thread;
 };
 
+const getUserThreads = async (userId) => {
+    const threads = await ChatThread.find({ participants: userId })
+        .populate('participants', 'name email')
+        .sort({ updatedAt: -1 });
+
+    return threads;
+};
+
+const getThreadMessages = async (threadId, userId, page = 1, limit = 20) => {
+    // Optional: Check user is part of thread
+    const thread = await ChatThread.findOne({ _id: threadId, participants: userId });
+    if (!thread) throw new Error('Thread not found or access denied');
+
+    const messages = await ChatMessage.find({ thread: threadId })
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean();
+
+    return messages.reverse(); // return in oldest → newest order
+};
+
+const sendMessage = async (threadId, senderId, messageContent) => {
+    const thread = await ChatThread.findOne({ _id: threadId, participants: senderId });
+    if (!thread) throw new Error('Thread not found or access denied');
+
+    const message = await ChatMessage.create({
+        thread: threadId,
+        sender: senderId,
+        message: messageContent,
+        readBy: [senderId],
+    });
+
+    thread.lastMessage = messageContent;
+    thread.updatedAt = new Date();
+    await thread.save();
+
+    return message;
+};
+
 const markMessagesAsRead = async (threadId, userId) => {
-    await Message.updateMany(
+    await ChatMessage.updateMany(
         { thread: threadId, readBy: { $ne: userId } },
-        { $push: { readBy: userId } }
+        { $addToSet: { readBy: userId } }
     );
 };
 
 module.exports = {
+    startThread,
     getUserThreads,
     getThreadMessages,
     sendMessage,
-    startThread,
     markMessagesAsRead,
 };

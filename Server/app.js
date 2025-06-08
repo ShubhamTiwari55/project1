@@ -11,6 +11,7 @@ app.use(express.json());
 app.use('/api/auth', require('./Auth/auth.routes'));
 app.use('/api/req', require('./Req&Res/route'));
 app.use('/api/pref', require('./Preference/routes'));
+app.use('/api/chat', require('./Chats/routes'));
 
 
 app.listen(PORT, (error) =>{
