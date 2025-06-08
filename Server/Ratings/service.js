@@ -64,7 +64,9 @@ const editRating = async (ratingId, fromUserId, { rating, review }) => {
 const getSubmittedRatings = async (fromUserId) => {
     const ratings = await Rating.find({ fromUserId })
         .populate('toUserId', 'name email')
-        .populate('requestId', 'itemName rentalStart rentalEnd');
+        .populate('requestId', 'itemName rentalStart rentalEnd')
+        .sort({ createdAt: -1 });
+
     return ratings;
 };
 

@@ -33,9 +33,13 @@ exports.editRating = async (req, res) => {
 
 exports.getMySubmittedRatings = async (req, res) => {
     try {
-        const ratings = await ratingService.getSubmittedRatings(req.user.id);
+        const userId = req.user.id;
+
+        const ratings = await ratingService.getSubmittedRatings(userId);
+
         res.json({ success: true, ratings });
     } catch (err) {
         res.status(400).json({ success: false, error: err.message });
     }
 };
+

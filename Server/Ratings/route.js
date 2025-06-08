@@ -4,8 +4,8 @@ const authMiddleware = require('../middlewares/authMiddleware');
 const ratingController = require('./controller');
 
 router.post('/', authMiddleware, ratingController.submitRating);
-router.get('/:userId', authMiddleware, ratingController.getUserRatings);
 router.put('/:ratingId', authMiddleware, ratingController.editRating);
-router.get('/mySubmitted', authMiddleware, ratingController.getMySubmittedRatings);
+router.get('/my-submitted', authMiddleware, ratingController.getMySubmittedRatings);
+router.get('/:userId', authMiddleware, ratingController.getUserRatings);
 
 module.exports = router;
