@@ -14,6 +14,8 @@ app.use('/api/pref', require('./Preference/routes'));
 app.use('/api/chat', require('./Chats/routes'));
 app.use('/api/payment', require('./Payments/route'));
 app.use('/api/ratings', require('./Ratings/route'));
+app.use('/api/location', require('./Location/route'));
+
 
 
 app.listen(PORT, (error) =>{
