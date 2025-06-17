@@ -23,7 +23,7 @@ export default function SignupPage() {
 
       if (!res.ok) throw new Error(data.message || 'Signup failed');
       localStorage.setItem('token', data.token);
-      router.push('/');
+      router.push('/check-email');
     } catch (err) {
       setError(err.message);
     }

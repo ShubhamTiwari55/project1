@@ -17,13 +17,7 @@ export default function VerifyEmailPage() {
 
     const verify = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/auth/verify-email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token }),
-        });
+        const res = await fetch(`http://localhost:4000/api/auth/verify-email?token=${token}`);
 
         if (!res.ok) throw new Error('Verification failed');
 
